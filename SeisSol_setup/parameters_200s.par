@@ -1,0 +1,100 @@
+&equations
+MaterialFileName = 'Ridgecrest_material_cvms1000m.yaml'
+Plasticity = 1
+Tv = 0.05
+/
+
+&IniCondition
+/
+
+&Boundaries
+BC_fs = 1
+BC_dr = 1
+BC_of = 1
+/
+
+&DynamicRupture
+FL = 103
+BackgroundType = 0
+ModelFileName = 'Ridgecrest_fault.yaml'
+
+RS_f0 = 0.6
+Mu_W = 0.1
+RS_sr0 = 1d-6
+RS_b = 0.014
+RS_iniSlipRate1 = 1d-16
+RS_iniSlipRate2 = 0d0
+t_0 = 1.0
+
+GPwise = 1
+refPointMethod = 1
+XRef = 556000
+YRef = 3951000 
+ZRef = 0
+
+RF_output_on = 0
+magnitude_output_on = 1
+energy_rate_output_on = 1      
+OutputPointType = 5
+/
+
+&Elementwise
+printIntervalCriterion = 2
+printtimeinterval_sec = 0.1
+OutputMask = 1 1 1 1 1 1 1 1 1 1 1
+refinement = 1
+/
+ 
+&Pickpoint
+printtimeinterval = 1
+OutputMask = 1 1 1 0
+nOutpoints = 0
+PPFileName = 'receivers_fault.dat'
+/
+
+&SourceType
+/
+
+&SpongeLayer
+/
+            
+&MeshNml
+MeshFile = 'mesh_files/Ridgecrest_NewModel1_f200_topo500_noRef_xml'
+meshgenerator = 'PUML'
+/
+
+&Discretization
+CFL = 0.5
+FixTimeStep = 5
+ClusteredLTS = 2
+/
+
+&Output
+OutputFile ='output_Ridgecrest_200s/data'
+iOutputMask = 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1
+Format = 6
+Refinement = 1
+TimeInterval = 1.0
+printIntervalCriterion = 2
+SurfaceOutput = 1
+SurfaceOutputRefinement = 1
+SurfaceOutputInterval = 0.1
+pickdt = 0.005
+pickDtType = 1
+FaultOutputFlag = 1
+nRecordPoints = 93
+RFileName = 'receivers_surface_min100.dat'
+!checkPointFile = 'output_Ridgecrest_20s/check'
+!checkPointBackend = 'mpio'
+!checkPointInterval = 10.0
+/
+            
+&AbortCriteria
+EndTime = 200.0
+/
+
+&Analysis
+/
+
+&Debugging
+/

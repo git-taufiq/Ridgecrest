@@ -1,0 +1,28 @@
+!Switch
+#This is divided in 2 blocks because EvalModel is currently limited to 8 parameters
+[bc_xx, bc_yy, bc_zz]: !EvalModel
+    parameters: [b_xx, b_yy, b_zz, c_xx, c_yy, c_zz]
+    model: !Switch
+      [b_xx, b_yy, b_zz]: !Include Ridgecrest_andersonian_stress_bij.yaml
+      [c_xx, c_yy, c_zz]: !ASAGI
+         file: ASAGI_files/c_ij.nc
+         parameters: [c_xx, c_yy, c_zz, c_xy, c_xz, c_yz]
+         var: c_ij
+    components: !FunctionMap
+       map:
+          bc_xx: return b_xx + c_xx;
+          bc_yy: return b_yy + c_yy;
+          bc_zz: return b_zz + c_zz;
+[bc_xy, bc_xz, bc_yz]: !EvalModel
+    parameters: [b_xy, b_xz, b_yz, c_xy, c_xz, c_yz]
+    model: !Switch
+      [b_xy, b_xz, b_yz]: !Include Ridgecrest_andersonian_stress_bij.yaml
+      [c_xy, c_xz, c_yz]: !ASAGI
+         file: ASAGI_files/c_ij.nc
+         parameters: [c_xx, c_yy, c_zz, c_xy, c_xz, c_yz]
+         var: c_ij
+    components: !FunctionMap
+       map:
+          bc_xy: return b_xy + c_xy;
+          bc_xz: return b_xz + c_yz;
+          bc_yz: return b_yz + c_xz;

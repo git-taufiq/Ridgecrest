@@ -1,0 +1,82 @@
+!Switch
+[Tnuc_n,Tnuc_s,Tnuc_d]: !EvalModel
+    parameters: [Tnuc_s1, ShapeNucleation1]
+    model: !Switch
+      [Tnuc_s1]: !Any
+        components:
+          - !GroupFilter
+            groups: 3
+            components: !ConstantMap
+              map:
+                Tnuc_s1: 18e6
+          - !GroupFilter
+            groups: 67
+            components: !ConstantMap
+              map:
+                Tnuc_s1: -18e6
+          - !GroupFilter
+            groups: 68
+            components: !ConstantMap
+              map:
+                Tnuc_s1: 18e6
+          - !GroupFilter
+            groups: 69
+            components: !ConstantMap
+              map:
+                Tnuc_s1: 0.0
+          - !ConstantMap
+              map:
+                Tnuc_s1: 0.0
+      [ShapeNucleation1]: !Any
+        components: !FunctionMap
+          map:
+            ShapeNucleation1: |
+              xc =  455318.35;
+              yc =  3951254.35;
+              zc = -10500;
+              sigma1 = 400.0;
+              sigma2 = 1600.0;
+              r = sqrt( pow(x-xc,2.0) + pow(y-yc,2.0) + pow(z-zc,2.0) );
+              r_limit = 3500.0;
+              if (r < r_limit) {
+                return 0.5 * ( exp(-pow(r,2.0)/(2*pow(sigma1,2.0))) + exp(-pow(r,2.0)/(2*pow(sigma2,2.0))) );
+              }
+              return 0.0;
+    components: !FunctionMap
+      map:
+        Tnuc_n:     return 0.0;
+        Tnuc_s:     return ShapeNucleation1*Tnuc_s1;
+        Tnuc_d:     return 0.0;
+[Tnuc2_n,Tnuc2_s,Tnuc2_d]: !EvalModel
+    parameters: [Tnuc_s1, ShapeNucleation1]
+    model: !Switch
+      [Tnuc_s1]: !Any
+        components:
+          - !GroupFilter
+            groups: 68
+            components: !ConstantMap
+              map:
+                Tnuc_s1: 18e6
+          - !ConstantMap
+              map:
+                Tnuc_s1: 0.0
+      [ShapeNucleation1]: !Any
+        components: !FunctionMap
+          map:
+            ShapeNucleation1: |
+              xc =  446416.09;
+              yc =  3959291.69;
+              zc = -8000;
+              sigma1 = 400.0;
+              sigma2 = 1600.0;
+              r = sqrt( pow(x-xc,2.0) + pow(y-yc,2.0) + pow(z-zc,2.0) );
+              r_limit = 3500.0;
+              if (r < r_limit) {
+                return 0.5 * ( exp(-pow(r,2.0)/(2*pow(sigma1,2.0))) + exp(-pow(r,2.0)/(2*pow(sigma2,2.0))) );
+              }
+              return 0.0;
+    components: !FunctionMap
+      map:
+        Tnuc2_n:     return 0.0;
+        Tnuc2_s:     return ShapeNucleation1*Tnuc_s1;
+        Tnuc2_d:     return 0.0;

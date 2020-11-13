@@ -1,0 +1,129 @@
+!Switch
+#This is divided in 2 blocks because EvalModel is currently limited to 8 parameters
+[s_xx, s_yy, s_zz]: !EvalModel
+    parameters: [Omega, bc_xx, bc_yy, bc_zz, sigc_zz]
+    model: !Switch
+      [Omega]: !EvalModel
+        parameters: [seismoDepth,z]
+        model: !Switch
+           [seismoDepth]: !AffineMap
+               matrix:
+                  y0: [0.0, 1.0, 0.0]
+               translation:
+                  y0: 0
+               components:
+                  # 3,67: Mw64 conjugate fault and parallel fault
+                  - !GroupFilter
+                    groups: [3,67]
+                    components: !ASAGI
+                      file: ASAGI_files/seismoDepth64.nc
+                      parameters: [seismoDepth]
+                      var: seismoDepth64
+                  # 68,69: Mw71 main fault and South branch
+                  - !GroupFilter
+                    groups: [68,69]
+                    components: !ASAGI
+                      file: ASAGI_files/seismoDepth71.nc
+                      parameters: [seismoDepth]
+                      var: seismoDepth71
+                  - !ConstantMap
+                    map:
+                      seismoDepth: -11000.0
+           [z]: !AffineMap
+               matrix:
+                  z: [0.0, 0.0, 1.0]
+               translation:
+                  z: 0
+        components: !FunctionMap
+           #Tappering of the deviatoric stress with depth
+           map:
+               Omega: |
+                  zStressDecreaseStart = seismoDepth;
+                  zStressDecreaseStop = zStressDecreaseStart-4000.;
+                  zStressDecreaseWidth = zStressDecreaseStart-zStressDecreaseStop;
+                  if  (z>=zStressDecreaseStart) {
+                     return 1.0;
+                  } else {
+                     if (z>=zStressDecreaseStop) {
+                        a = 1.0-(z-zStressDecreaseStop)/zStressDecreaseWidth;
+                        Sx = (3.0*a*a-2.0*a*a*a);
+                        return 1.0-Sx;
+                     } else {
+                        return 0.001;
+                     }
+                  }
+      [bc_xx, bc_yy, bc_zz]: !Include Ridgecrest_andersonian_stress_bij_cij.yaml
+      [sigc_zz]: !EvalModel
+         parameters: [gamma]
+         model: !Any
+            components:
+               - !ConstantMap
+                 map:
+                    gamma: 0.75
+         components: !FunctionMap
+            map:
+               sigc_zz: return 2700*9.8*-15000*(1.0-gamma);
+    components: !FunctionMap
+       map:
+          s_xx: return bc_xx*Omega + (1.0-Omega)*(sigc_zz);
+          s_yy: return bc_yy*Omega + (1.0-Omega)*(sigc_zz);
+          s_zz: return bc_zz*Omega + (1.0-Omega)*(sigc_zz);
+[s_xy, s_xz, s_yz]: !EvalModel
+    parameters: [Omega, bc_xy, bc_xz, bc_yz]
+    model: !Switch
+      [Omega]: !EvalModel
+        parameters: [seismoDepth,z]
+        model: !Switch
+           [seismoDepth]: !AffineMap
+               matrix:
+                  y0: [0.0, 1.0, 0.0]
+               translation:
+                  y0: 0
+               components:
+                  # 3,67: Mw64 conjugate fault and parallel fault
+                  - !GroupFilter
+                    groups: [3,67]
+                    components: !ASAGI
+                      file: ASAGI_files/seismoDepth64.nc
+                      parameters: [seismoDepth]
+                      var: seismoDepth64
+                  # 68,69: Mw71 main fault and South branch
+                  - !GroupFilter
+                    groups: [68,69]
+                    components: !ASAGI
+                      file: ASAGI_files/seismoDepth71.nc
+                      parameters: [seismoDepth]
+                      var: seismoDepth71
+                  - !ConstantMap
+                    map:
+                      seismoDepth: -11000.0
+           [z]: !AffineMap
+               matrix:
+                  z: [0.0, 0.0, 1.0]
+               translation:
+                  z: 0
+        components: !FunctionMap
+           #Tappering of the deviatoric stress with depth
+           map:
+               Omega: |
+                  zStressDecreaseStart = seismoDepth;
+                  zStressDecreaseStop = zStressDecreaseStart-4000.;
+                  zStressDecreaseWidth = zStressDecreaseStart-zStressDecreaseStop;
+                  if  (z>=zStressDecreaseStart) {
+                     return 1.0;
+                  } else {
+                     if (z>=zStressDecreaseStop) {
+                        a = 1.0-(z-zStressDecreaseStop)/zStressDecreaseWidth;
+                        Sx = (3.0*a*a-2.0*a*a*a);
+                        return 1.0-Sx;
+                     } else {
+                        return 0.001;
+                     }
+                  }
+      [bc_xy, bc_xz, bc_yz]: !Include Ridgecrest_andersonian_stress_bij_cij.yaml
+    components: !FunctionMap
+       map:
+          s_xy: return bc_xy*Omega;
+          s_xz: return bc_xz*Omega;
+          s_yz: return bc_yz*Omega;
+

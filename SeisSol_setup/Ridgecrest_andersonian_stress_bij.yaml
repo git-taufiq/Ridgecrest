@@ -1,0 +1,31 @@
+!EvalModel
+parameters: [sig_zz,SH_max,s2ratio,S]
+model: !Switch
+  [sig_zz]: !Include Ridgecrest_effectiveConfiningStress.yaml
+  [SH_max, s2ratio]: !AffineMap
+   matrix:
+      x: [1.0, 0.0, 0.0]
+      y: [0.0, 1.0, 0.0]
+   translation:
+      x: 0
+      y: 0
+   components: !Switch
+        [SH_max]: !ASAGI
+           file: ASAGI_files/SHmax.nc
+           parameters: [SH_max]
+           var: SHmax
+        [s2ratio]: !ASAGI
+           file: ASAGI_files/s2ratio.nc
+           parameters: [s2ratio]
+           var: s2ratio
+  [S]: !FunctionMap
+    map:
+      S: |
+        R = 0.8;
+        return (1.0/R-1.0);
+components: !AndersonianStress
+  constants:
+    mu_s:      0.6
+    mu_d:      0.1
+    cohesion:  0.0
+    S_v: 2

@@ -1,0 +1,15 @@
+!Switch
+[rho, mu, lambda]: !ASAGI
+  file: ASAGI_files/Ridgecrest_RhoMuLambda_cvms1000.nc
+  parameters: [rho, mu, lambda]
+  var: data
+[bulkFriction]: !ConstantMap
+  map:
+    bulkFriction: 0.7
+[plastCo]: !IdentityMap
+  components:
+    - !ASAGI
+       file: ASAGI_files/plastCo.nc
+       parameters: [plastCo]
+       var: plastCo
+[s_xx, s_yy, s_zz, s_xy, s_xz, s_yz]: !Include Ridgecrest_stress.yaml

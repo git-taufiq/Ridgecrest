@@ -1,0 +1,33 @@
+!Switch
+[s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include Ridgecrest_stress_fault.yaml
+[Tnuc_n, Tnuc_s, Tnuc_d, Tnuc2_n, Tnuc2_s, Tnuc2_d]: !Include Ridgecrest_nucleation_stress.yaml
+[rs_a]: !LayeredModel
+  map: !AffineMap
+    matrix:
+      z0: [0.0, 0.0, 1.0]
+    translation:
+      z0: 0
+  interpolation: linear
+  parameters: [rs_a]
+  nodes:
+     10e10:   [0.02]
+     1500.0:  [0.02]
+     -4000.0: [0.01]
+     -10e10:  [0.01]
+[RS_sl0]: !ConstantMap
+  map:
+    RS_sl0: 0.2
+[rs_srW]: !LayeredModel
+  map: !AffineMap
+    matrix:
+      z0: [0.0, 0.0, 1.0]
+    translation:
+      z0: 0
+  interpolation: linear
+  parameters: [rs_srW]
+  nodes:
+     10e10:   [0.1]
+     1500.0:  [0.1]
+     -4000.0: [0.1]
+     -10e10:  [0.1]
+

@@ -1,7 +1,7 @@
 !Switch
 #This is divided in 2 blocks because EvalModel is currently limited to 8 parameters
 [s_xx, s_yy, s_zz]: !EvalModel
-    parameters: [Omega, bc_xx, bc_yy, bc_zz, sigc_zz]
+    parameters: [Omega, sig_zz, bc_xx, bc_yy, bc_zz, sigc_zz]
     model: !Switch
       [Omega]: !EvalModel
         parameters: [seismoDepth,z]
@@ -52,22 +52,33 @@
                         return 0.001;
                      }
                   }
+      [sig_zz]: !Include Ridgecrest_effectiveConfiningStress.yaml
       [bc_xx, bc_yy, bc_zz]: !Include Ridgecrest_andersonian_stress_bij_cij.yaml
       [sigc_zz]: !EvalModel
          parameters: [gamma]
          model: !Any
             components:
+               - !GroupFilter
+                 groups: [3,67]
+                 components: !ConstantMap
+                   map:
+                     gamma: 0.90625
+               - !GroupFilter
+                 groups: [68,69]
+                 components: !ConstantMap
+                   map:
+                     gamma: 0.878125
                - !ConstantMap
                  map:
-                    gamma: 0.75
+                    gamma: 0.90625
          components: !FunctionMap
             map:
-               sigc_zz: return 2700*9.8*-15000*(1.0-gamma);
+               sigc_zz: return 2700*9.8*-11000*(1.0-gamma);
     components: !FunctionMap
        map:
-          s_xx: return bc_xx*Omega + (1.0-Omega)*(sigc_zz);
-          s_yy: return bc_yy*Omega + (1.0-Omega)*(sigc_zz);
-          s_zz: return bc_zz*Omega + (1.0-Omega)*(sigc_zz);
+          s_xx: return bc_xx*Omega + (1.0-Omega)*(sig_zz+sigc_zz);
+          s_yy: return bc_yy*Omega + (1.0-Omega)*(sig_zz+sigc_zz);
+          s_zz: return bc_zz*Omega + (1.0-Omega)*(sig_zz+sigc_zz);
 [s_xy, s_xz, s_yz]: !EvalModel
     parameters: [Omega, bc_xy, bc_xz, bc_yz]
     model: !Switch

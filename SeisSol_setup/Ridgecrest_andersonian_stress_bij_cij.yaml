@@ -24,5 +24,5 @@
     components: !FunctionMap
        map:
           bc_xy: return b_xy + c_xy;
-          bc_xz: return b_xz + c_yz;
-          bc_yz: return b_yz + c_xz;
+          bc_xz: return b_xz + c_xz;
+          bc_yz: return b_yz + c_yz;

@@ -1,10 +1,21 @@
 !EvalModel
 parameters: [rho_av,z,gamma]
 model: !Switch
-    [rho_av]: !ASAGI
-       file: ASAGI_files/rho_col_average.nc
-       parameters: [rho_av]
-       var: rho_col_average
+    [rho_av]: !IdentityMap
+      components:
+        - !AxisAlignedCuboidalDomainFilter
+          limits:
+            x: [420000.0, 480000.0]
+            y: [3920000.0, 3980000.0]
+            z: [-20000.0, 2000.0]
+          components: !ASAGI
+            file: ASAGI_files/rho_col_average_cvms200.nc
+            parameters: [rho_av]
+            var: rho_col_average
+        - !ASAGI
+            file: ASAGI_files/rho_col_average_cvms1000.nc
+            parameters: [rho_av]
+            var: rho_col_average
     [z]: !AffineMap
        matrix:
           z: [0.0, 0.0, 1.0]
@@ -19,15 +30,15 @@ model: !Switch
             groups: [3,67]
             components: !ConstantMap
               map:
-                gamma: 0.90625
+                gamma: 0.825
           - !GroupFilter
             groups: [68,69]
             components: !ConstantMap
               map:
-                gamma: 0.878125
+                gamma: 0.77
           - !ConstantMap
             map:
-               gamma: 0.90625
+               gamma: 0.825
 components: !FunctionMap
    map:
       sig_zz: return rho_av*9.8*min(-2000.0,z)*(1-gamma);

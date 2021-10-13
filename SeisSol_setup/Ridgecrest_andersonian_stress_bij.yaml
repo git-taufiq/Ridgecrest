@@ -11,11 +11,11 @@ model: !Switch
       y: 0
    components: !Switch
         [SH_max]: !ASAGI
-           file: ASAGI_files/SHmax.nc
+           file: ASAGI_files/SHmax_sig2_2000.nc
            parameters: [SH_max]
            var: SHmax
         [s2ratio]: !ASAGI
-           file: ASAGI_files/s2ratio.nc
+           file: ASAGI_files/s2ratio_sig2_2000.nc
            parameters: [s2ratio]
            var: s2ratio
   [S]: !FunctionMap

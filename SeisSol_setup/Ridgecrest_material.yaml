@@ -1,0 +1,37 @@
+!Switch
+[rho, mu, lambda, Qp, Qs]: !IdentityMap
+  components:
+    - !AxisAlignedCuboidalDomainFilter
+      limits:
+        x: [420000.0, 480000.0]
+        y: [3920000.0, 3980000.0]
+        z: [-20000.0, 2000.0]
+      components: !ASAGI
+        file: ASAGI_files/Ridgecrest_RhoMuLambdaQpQs_cvms200.nc
+        parameters: [rho, mu, lambda, Qp, Qs]
+        var: data
+    - !ASAGI
+        file: ASAGI_files/Ridgecrest_RhoMuLambdaQpQs_cvms1000.nc
+        parameters: [rho, mu, lambda, Qp, Qs]
+        var: data
+[bulkFriction]: !ConstantMap
+  map:
+    bulkFriction: 0.7
+[plastCo]: !IdentityMap
+  components:
+   # apply a finer data inside the refinement zone
+    - !AxisAlignedCuboidalDomainFilter
+      limits:
+        x: [420000.0, 480000.0]
+        y: [3920000.0, 3980000.0]
+        z: [-20000.0, 2000.0]
+      components: !ASAGI
+        file: ASAGI_files/plastCo_cvms200.nc
+        parameters: [plastCo]
+        var: plastCo
+    # apply a coarser data outside the refinement zone
+    - !ASAGI
+        file: ASAGI_files/plastCo_cvms1000.nc
+        parameters: [plastCo]
+        var: plastCo
+[s_xx, s_yy, s_zz, s_xy, s_xz, s_yz]: !Include Ridgecrest_stress.yaml

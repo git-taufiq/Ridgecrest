@@ -1,7 +1,7 @@
 !EvalModel
 parameters: [sig_zz,SH_max,s2ratio,S]
 model: !Switch
-  [sig_zz]: !Include Ridgecrest_effectiveConfiningStress.yaml
+  [sig_zz]: !Include Ridgecrest_effective_sigzz.yaml
   [SH_max, s2ratio]: !AffineMap
    matrix:
       x: [1.0, 0.0, 0.0]

@@ -9,12 +9,12 @@ def fill(data, invalid=None):
 
 """
 # here is the format of the file
-# LON LAT DEP 1 SHmax_trend SHmax_mag SHmin_mag SV_mag  See Sen Seu Snn Snu Suu                  RATIO DEV  ISO
-# LON LAT DEP 2  1-sigma     1-sigma   1-sigma  1-sigma DOT dot-1sig ANG s1-1sig s2-1sig s3-1sig 1sig  1sig 1sig
+# LON LAT DEP 1 SHmax_trend SHmax_mag SHmin_mag SV_mag See Sen Seu Snn Snu Suu RATIO DEV ISO
+# LON LAT DEP 2 1-sigma 1-sigma 1-sigma 1-sigma DOT dot-1sig ANG s1-1sig s2-1sig s3-1sig 1sig 1sig 1sig
 #
 # metedata with Yang and Huaksson (2012) 2D stress inversion:
-# LON LAT NaN 1 SHmax_trend NaN NaN NaN  See Sen Seu Snn Snu Suu   1 0  0
-# LON LAT NaN 2  1-sigma    NaN NaN NaN  0 NaN 0 NaN NaN NaN NaN  NaN NaN
+# LON LAT NaN 1 SHmax_trend NaN NaN NaN See Sen Seu Snn Snu Suu 1 0 0
+# LON LAT NaN 2 1-sigma NaN NaN NaN 0 NaN 0 NaN NaN NaN NaN  NaN NaN
 """
 
 stress = np.loadtxt('input_files/CSM_YHSM-2013_Yang_Hauksson_2012.txt')
@@ -82,7 +82,7 @@ for ll in range(4,7):
       plt.figure()
       smin = np.amin(SHmax)
       smax = np.amax(SHmax)
-      SHmax2 = nd.gaussian_filter(SHmax,sigma=1)
+      SHmax2 = nd.gaussian_filter(SHmax,sigma=2)
       plt.pcolor(X, Y, SHmax2)
       plt.colorbar()
       plt.clim(smin,smax)
